@@ -309,3 +309,46 @@ button:disabled {
     }
     h2 { font-size: 1.5rem; }
 }
+
+/* ... Tambahkan di bagian bawah file style.css yang sudah ada ... */
+
+.chart-container {
+    margin: 20px 0;
+    padding: 10px;
+    background: #f8fafc;
+    border-radius: 16px;
+}
+
+.table-container {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.eis-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.eis-table th {
+    background: #f1f5f9;
+    padding: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.eis-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.btn-secondary {
+    background: #f1f5f9;
+    color: var(--text-dark);
+}
+
+/* Transisi perlebar box */
+.box {
+    transition: max-width 0.5s ease-in-out;
+}
