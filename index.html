@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-material-ui/material-ui.css" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -23,20 +24,18 @@
 
         <div id="loginPage">
             <h2>Verifikasi Pemilih</h2>
-            <p class="subtitle">Masukkan NIS (bagi murid) atau Kode Unik (bagi GTK) untuk memulai</p>
+            <p class="subtitle">Masukkan NIS (untuk murid) atau Kode Unik (untuk GTK) untuk memulai pemilihan</p>
             <div class="input-wrapper">
                 <input type="text" id="nisInput" placeholder="Contoh: 12345" inputmode="numeric">
             </div>
-            <button onclick="prosesLogin()" id="btnLogin" class="btn-primary">
-                Masuk & Memilih
-            </button>
+            <button onclick="prosesLogin()" id="btnLogin" class="btn-primary">Masuk & Memilih</button>
         </div>
 
         <div id="votePage" class="hidden fade-in">
             <div class="info-user">
                 <div class="info-label">Selamat Datang,</div>
-                <div class="user-name" id="dispNama">Nama Siswa</div>
-                <div class="user-class" id="dispKelas">Kelas X</div>
+                <div class="user-name" id="dispNama"></div>
+                <div class="user-class" id="dispKelas"></div>
             </div>
             
             <form id="formVote">
@@ -49,7 +48,7 @@
                     <label class="card">
                         <input type="radio" name="kandidat" value="1" required>
                         <div class="card-content">
-                            <div class="img-frame"><img src="assets/1.png" alt="Calon 1"></div>
+                            <div class="img-frame"><img src="assets/1.png" alt="01"></div>
                             <div class="candidate-info"><span class="number">01</span><h4>Calon A</h4></div>
                             <div class="check-icon"></div>
                         </div>
@@ -57,7 +56,7 @@
                     <label class="card">
                         <input type="radio" name="kandidat" value="2">
                         <div class="card-content">
-                            <div class="img-frame"><img src="assets/2.png" alt="Calon 2"></div>
+                            <div class="img-frame"><img src="assets/2.png" alt="02"></div>
                             <div class="candidate-info"><span class="number">02</span><h4>Calon B</h4></div>
                             <div class="check-icon"></div>
                         </div>
@@ -65,7 +64,7 @@
                     <label class="card">
                         <input type="radio" name="kandidat" value="3">
                         <div class="card-content">
-                            <div class="img-frame"><img src="assets/3.png" alt="Calon 3"></div>
+                            <div class="img-frame"><img src="assets/3.png" alt="03"></div>
                             <div class="candidate-info"><span class="number">03</span><h4>Calon C</h4></div>
                             <div class="check-icon"></div>
                         </div>
@@ -73,7 +72,7 @@
                     <label class="card">
                         <input type="radio" name="kandidat" value="4">
                         <div class="card-content">
-                            <div class="img-frame"><img src="assets/4.png" alt="Calon 4"></div>
+                            <div class="img-frame"><img src="assets/4.png" alt="04"></div>
                             <div class="candidate-info"><span class="number">04</span><h4>Calon D</h4></div>
                             <div class="check-icon"></div>
                         </div>
@@ -84,24 +83,26 @@
         </div>
 
         <div id="eisDashboard" class="hidden fade-in">
-            <h2 style="color: var(--primary-color);">Dashboard dengan Grafik</h2>
-            <p class="subtitle">Rekapitulasi Real-Time Perolehan Suara</p>
+            <h2 style="color: var(--primary-color);">Dashboard Monitoring Perolehan Suara</h2>
+            <div class="live-indicator"><span class="dot"></span> LIVE UPDATE (3s)</div>
             
-            <div class="chart-container">
-                <canvas id="voteChart"></canvas>
+            <div class="eis-charts-container">
+                <div class="chart-card">
+                    <h3>Perolehan Suara</h3>
+                    <canvas id="voteChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Partisipasi Pemilih</h3>
+                    <canvas id="participationChart"></canvas>
+                </div>
             </div>
 
             <div class="table-container">
                 <table class="eis-table">
                     <thead>
-                        <tr>
-                            <th>Kandidat</th>
-                            <th>Suara</th>
-                            <th>Persentase</th>
-                        </tr>
+                        <tr><th>Kandidat</th><th>Suara</th><th>Persentase</th></tr>
                     </thead>
-                    <tbody id="eisTableBody">
-                        </tbody>
+                    <tbody id="eisTableBody"></tbody>
                 </table>
             </div>
             
@@ -114,6 +115,3 @@
 <script src="script.js"></script>
 </body>
 </html>
-
-
-
