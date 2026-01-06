@@ -1,4 +1,7 @@
-const scriptURL = 'https://script.google.com/macros/s/AKfycbwHGch7qBohxbyfuayIzxWpLl3jMT0NaId2QZrnbwZRhQ671wUhV5jYI8v0Jlm4UVDI/exec';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbxLankbMXgZGnmaLwHtuEch999UuKNR14j3n52jFSYMIR2OTPz2YG-orHjuu0XvNtWe/exec';
+
+let eisChart1, eisChart2;
+let updateInterval;
 
 const Toast = Swal.mixin({
     toast: true,
@@ -11,27 +14,25 @@ const Toast = Swal.mixin({
 function prosesLogin() {
     const nis = document.getElementById('nisInput').value;
     const btn = document.getElementById('btnLogin');
-    const originalBtnText = btn.innerText;
 
     if (!nis) {
         Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Mohon masukkan NIS Anda!', confirmButtonColor: '#4e54c8' });
         return;
     }
 
-    // CEK KODE SEKOLAH UNTUK DASHBOARD EIS
     if (nis === '20402027') {
-        loadEIS();
+        startEIS();
         return;
     }
 
     btn.disabled = true;
-    btn.innerHTML = 'Sedang Memverifikasi...';
+    btn.innerHTML = 'Memverifikasi...';
 
     fetch(`${scriptURL}?action=login&nis=${nis}`, { method: 'POST' })
     .then(res => res.json())
     .then(data => {
         if (data.status === 'success') {
-            Toast.fire({ icon: 'success', title: `Selamat datang, ${data.nama}!` });
+            Toast.fire({ icon: 'success', title: `Selamat datang, ${data.nama}` });
             document.getElementById('loginPage').classList.add('hidden');
             document.getElementById('votePage').classList.remove('hidden');
             document.getElementById('dispNama').innerText = data.nama;
@@ -40,87 +41,111 @@ function prosesLogin() {
             document.getElementById('hiddenNama').value = data.nama;
             document.getElementById('hiddenKelas').value = data.kelas;
         } else {
-            Swal.fire({ icon: 'error', title: 'Verifikasi Gagal', text: data.message, confirmButtonColor: '#d33' });
+            Swal.fire({ icon: 'error', title: 'Akses Ditolak', text: data.message });
         }
     })
-    .catch(err => {
-        Swal.fire({ icon: 'error', title: 'Koneksi Terputus', text: 'Cek koneksi internet Anda.' });
-    })
+    .catch(() => Swal.fire('Error', 'Koneksi gagal', 'error'))
     .finally(() => {
         btn.disabled = false;
-        btn.innerText = originalBtnText;
+        btn.innerText = 'Masuk & Memilih';
     });
 }
 
-// FUNGSI KHUSUS DASHBOARD EIS
-function loadEIS() {
-    Swal.fire({ title: 'Membuka Dashboard...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+function startEIS() {
+    document.getElementById('loginPage').classList.add('hidden');
+    document.getElementById('eisDashboard').classList.remove('hidden');
+    document.getElementById('mainBox').style.maxWidth = "900px";
+    
+    refreshDashboard();
+    // Update setiap 3 detik
+    updateInterval = setInterval(refreshDashboard, 3000);
+}
 
+function refreshDashboard() {
     fetch(`${scriptURL}?action=getResults`)
     .then(res => res.json())
     .then(data => {
-        Swal.close();
-        document.getElementById('loginPage').classList.add('hidden');
-        document.getElementById('eisDashboard').classList.remove('hidden');
-        document.getElementById('mainBox').style.maxWidth = "700px"; // Perlebar box untuk dashboard
-
-        const labels = data.results.map(r => r.name);
-        const votes = data.results.map(r => r.votes);
-        const total = votes.reduce((a, b) => a + b, 0);
-
-        // Render Tabel
-        const tableBody = document.getElementById('eisTableBody');
-        tableBody.innerHTML = data.results.map(r => `
-            <tr>
-                <td>${r.name}</td>
-                <td><strong>${r.votes}</strong></td>
-                <td>${total > 0 ? ((r.votes/total)*100).toFixed(1) : 0}%</td>
-            </tr>
-        `).join('');
-
-        // Render Chart
-        const ctx = document.getElementById('voteChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Jumlah Suara',
-                    data: votes,
-                    backgroundColor: ['#4e54c8', '#8f94fb', '#4ade80', '#f87171'],
-                    borderRadius: 8
-                }]
-            },
-            options: { responsive: true, plugins: { legend: { display: false } } }
-        });
+        renderCharts(data);
+        renderTable(data);
     })
-    .catch(() => Swal.fire('Gagal', 'Pastikan Apps Script Anda mendukung action getResults', 'error'));
+    .catch(err => console.error("Update gagal:", err));
 }
 
-// LOGIKA VOTE (Tetap Sama)
+function renderCharts(data) {
+    const labels = data.results.map(r => r.name);
+    const votes = data.results.map(r => r.votes);
+
+    // 1. Grafik Perolehan Suara (Bar)
+    const ctx1 = document.getElementById('voteChart').getContext('2d');
+    if (eisChart1) eisChart1.destroy();
+    eisChart1 = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Suara',
+                data: votes,
+                backgroundColor: ['#4e54c8', '#8f94fb', '#4ade80', '#f87171'],
+                borderRadius: 8
+            }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    // 2. Grafik Partisipasi Pemilih (Doughnut)
+    const ctx2 = document.getElementById('participationChart').getContext('2d');
+    if (eisChart2) eisChart2.destroy();
+    eisChart2 = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: ['Sudah', 'Belum'],
+            datasets: [{
+                data: [data.participation.sudah, data.participation.belum],
+                backgroundColor: ['#4ade80', '#e2e8f0']
+            }]
+        },
+        options: { responsive: true, cutout: '70%', plugins: { legend: { position: 'bottom' } } }
+    });
+}
+
+function renderTable(data) {
+    const total = data.results.reduce((a, b) => a + b.votes, 0);
+    const tableBody = document.getElementById('eisTableBody');
+    tableBody.innerHTML = data.results.map(r => `
+        <tr>
+            <td>${r.name}</td>
+            <td><strong>${r.votes}</strong></td>
+            <td>${total > 0 ? ((r.votes/total)*100).toFixed(1) : 0}%</td>
+        </tr>
+    `).join('');
+}
+
 document.getElementById('formVote').addEventListener('submit', function(e) {
     e.preventDefault();
     const btn = document.getElementById('btnVote');
     const form = this;
 
     Swal.fire({
-        title: 'Yakin dengan pilihan Anda?',
-        text: "Suara tidak dapat diubah setelah dikirim!",
+        title: 'Kirim Suara?',
+        text: "Pilihan tidak dapat diubah!",
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#f86d1dff',
-        confirmButtonText: 'Ya, Kirim!',
-        cancelButtonText: 'Batal'
+        confirmButtonColor: '#4e54c8'
     }).then((result) => {
         if (result.isConfirmed) {
             btn.disabled = true;
-            btn.innerText = 'Sedang Mengunci Suara...';
+            btn.innerText = 'Menyimpan...';
             const params = new URLSearchParams(new FormData(form));
             params.append('action', 'vote');
 
             fetch(scriptURL, { method: 'POST', body: params })
             .then(() => {
-                Swal.fire({ title: 'Berhasil!', text: 'Suara Anda telah disimpan.', icon: 'success' }).then(() => location.reload());
+                Swal.fire('Berhasil!', 'Suara Anda telah masuk.', 'success').then(() => location.reload());
+            })
+            .catch(() => {
+                Swal.fire('Gagal', 'Terjadi kesalahan.', 'error');
+                btn.disabled = false;
+                btn.innerText = 'Kirim Suara Sekarang';
             });
         }
     });
