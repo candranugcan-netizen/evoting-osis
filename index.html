@@ -8,15 +8,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
     <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-material-ui/material-ui.css" rel="stylesheet">
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="main-container">
-    <div class="box">
+    <div class="box" id="mainBox">
         <div class="logo-area">
             <img src="assets/logo.jpg" alt="Logo Sekolah" class="school-logo">
             <h1>E-Voting OSIS Espega 2026</h1>
@@ -24,12 +23,10 @@
 
         <div id="loginPage">
             <h2>Verifikasi Pemilih</h2>
-            <p class="subtitle">Masukkan NIS (untuk siswa) atau Kode Unik (GTK) Anda untuk memulai</p>
-            
+            <p class="subtitle">Masukkan NIS atau Kode Unik Anda untuk memulai</p>
             <div class="input-wrapper">
                 <input type="text" id="nisInput" placeholder="Contoh: 12345" inputmode="numeric">
             </div>
-            
             <button onclick="prosesLogin()" id="btnLogin" class="btn-primary">
                 Masuk & Memilih
             </button>
@@ -48,79 +45,72 @@
                 <input type="hidden" name="kelas" id="hiddenKelas">
 
                 <h3 class="section-title">Pilih Kandidat Ketua:</h3>
-                
                 <div class="candidate-grid">
                     <label class="card">
                         <input type="radio" name="kandidat" value="1" required>
                         <div class="card-content">
-                            <div class="img-frame">
-                                <img src="assets/1.png" alt="Calon 1">
-                            </div>
-                            <div class="candidate-info">
-                                <span class="number">01</span>
-                                <h4>Calon A</h4>
-                            </div>
+                            <div class="img-frame"><img src="assets/1.png" alt="Calon 1"></div>
+                            <div class="candidate-info"><span class="number">01</span><h4>Calon A</h4></div>
                             <div class="check-icon"></div>
                         </div>
                     </label>
-
                     <label class="card">
                         <input type="radio" name="kandidat" value="2">
                         <div class="card-content">
-                            <div class="img-frame">
-                                <img src="assets/2.png" alt="Calon 2">
-                            </div>
-                            <div class="candidate-info">
-                                <span class="number">02</span>
-                                <h4>Calon B</h4>
-                            </div>
+                            <div class="img-frame"><img src="assets/2.png" alt="Calon 2"></div>
+                            <div class="candidate-info"><span class="number">02</span><h4>Calon B</h4></div>
                             <div class="check-icon"></div>
                         </div>
                     </label>
-
                     <label class="card">
                         <input type="radio" name="kandidat" value="3">
                         <div class="card-content">
-                            <div class="img-frame">
-                                <img src="assets/3.png" alt="Calon 3">
-                            </div>
-                            <div class="candidate-info">
-                                <span class="number">03</span>
-                                <h4>Calon C</h4>
-                            </div>
+                            <div class="img-frame"><img src="assets/3.png" alt="Calon 3"></div>
+                            <div class="candidate-info"><span class="number">03</span><h4>Calon C</h4></div>
                             <div class="check-icon"></div>
                         </div>
                     </label>
-
-                     <label class="card">
+                    <label class="card">
                         <input type="radio" name="kandidat" value="4">
                         <div class="card-content">
-                            <div class="img-frame">
-                                <img src="assets/4.png" alt="Calon 3">
-                            </div>
-                            <div class="candidate-info">
-                                <span class="number">04</span>
-                                <h4>Calon D</h4>
-                            </div>
+                            <div class="img-frame"><img src="assets/4.png" alt="Calon 4"></div>
+                            <div class="candidate-info"><span class="number">04</span><h4>Calon D</h4></div>
                             <div class="check-icon"></div>
                         </div>
                     </label>
                 </div>
-
-                <button type="submit" id="btnVote" class="btn-vote">
-                    Kirim Suara Sekarang
-                </button>
+                <button type="submit" id="btnVote" class="btn-vote">Kirim Suara Sekarang</button>
             </form>
+        </div>
+
+        <div id="eisDashboard" class="hidden fade-in">
+            <h2 style="color: var(--primary-color);">Dashboard EIS</h2>
+            <p class="subtitle">Rekapitulasi Real-Time Perolehan Suara</p>
+            
+            <div class="chart-container">
+                <canvas id="voteChart"></canvas>
+            </div>
+
+            <div class="table-container">
+                <table class="eis-table">
+                    <thead>
+                        <tr>
+                            <th>Kandidat</th>
+                            <th>Suara</th>
+                            <th>Persentase</th>
+                        </tr>
+                    </thead>
+                    <tbody id="eisTableBody">
+                        </tbody>
+                </table>
+            </div>
+            
+            <button onclick="location.reload()" class="btn-secondary" style="margin-top: 20px;">Keluar Dashboard</button>
         </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="script.js"></script>
-
 </body>
 </html>
-
-
-
-
