@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>E-Voting OSIS</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-material-ui/material-ui.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="main-container">
+    <div class="box">
+        <div class="logo-area">
+            <img src="assets/logo.jpg" alt="Logo Sekolah" class="school-logo">
+            <h1>E-Voting OSIS Espega 2026</h1>
+        </div>
+
+        <div id="loginPage">
+            <h2>Verifikasi Pemilih</h2>
+            <p class="subtitle">Masukkan NIS Anda untuk memulai</p>
+            
+            <div class="input-wrapper">
+                <input type="text" id="nisInput" placeholder="Contoh: 12345" inputmode="numeric">
+            </div>
+            
+            <button onclick="prosesLogin()" id="btnLogin" class="btn-primary">
+                Masuk & Memilih
+            </button>
+        </div>
+
+        <div id="votePage" class="hidden fade-in">
+            <div class="info-user">
+                <div class="info-label">Selamat Datang,</div>
+                <div class="user-name" id="dispNama">Nama Siswa</div>
+                <div class="user-class" id="dispKelas">Kelas X</div>
+            </div>
+            
+            <form id="formVote">
+                <input type="hidden" name="nis" id="hiddenNis">
+                <input type="hidden" name="nama" id="hiddenNama">
+                <input type="hidden" name="kelas" id="hiddenKelas">
+
+                <h3 class="section-title">Pilih Kandidat Ketua:</h3>
+                
+                <div class="candidate-grid">
+                    <label class="card">
+                        <input type="radio" name="kandidat" value="01. Calon A" required>
+                        <div class="card-content">
+                            <div class="img-frame">
+                                <img src="https://via.placeholder.com/300x300.png?text=Calon+01" alt="Calon 1">
+                            </div>
+                            <div class="candidate-info">
+                                <span class="number">01</span>
+                                <h4>Calon A</h4>
+                            </div>
+                            <div class="check-icon"></div>
+                        </div>
+                    </label>
+
+                    <label class="card">
+                        <input type="radio" name="kandidat" value="02. Calon B">
+                        <div class="card-content">
+                            <div class="img-frame">
+                                <img src="https://via.placeholder.com/300x300.png?text=Calon+02" alt="Calon 2">
+                            </div>
+                            <div class="candidate-info">
+                                <span class="number">02</span>
+                                <h4>Calon B</h4>
+                            </div>
+                            <div class="check-icon"></div>
+                        </div>
+                    </label>
+
+                    <label class="card">
+                        <input type="radio" name="kandidat" value="02. Calon B">
+                        <div class="card-content">
+                            <div class="img-frame">
+                                <img src="https://via.placeholder.com/300x300.png?text=Calon+02" alt="Calon 2">
+                            </div>
+                            <div class="candidate-info">
+                                <span class="number">02</span>
+                                <h4>Calon B</h4>
+                            </div>
+                            <div class="check-icon"></div>
+                        </div>
+                    </label>
+                </div>
+
+                <button type="submit" id="btnVote" class="btn-vote">
+                    Kirim Suara Sekarang
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
